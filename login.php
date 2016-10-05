@@ -37,8 +37,6 @@
 					}
 				}
 			}
-		}else if(isset($_POST['home'])){
-	    	header("Location: index.php");
 		}else{
 	    	session_unset();
 			session_destroy();
@@ -50,7 +48,6 @@
     Password: <input type="password" name="password" /><br/>
 <br/>
 <input type="submit" name="login" value="Login" />
-<input type="submit" name="logout" value="Logout" />
-<input type="submit" name="home" value="Home" />
+<button type="button" onclick="window.location = 'index.php';">home</button>
 
 </form>
