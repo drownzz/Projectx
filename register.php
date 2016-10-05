@@ -5,6 +5,10 @@
 	        $password = $_POST['password'];
 	        $username = $_POST['username'];
 			$email = $_POST['email'];
+			$activateKey = activationKey();
+			$saltPassword = hash('sha256',($password));
+			$stmt = $conn->prepare("INSERT INTO users (name, password, email, activationKey) VALUES (?, ?, ?, ?)");
+			$stmt->bind_param("ssss", $username, $saltPassword, $email, $activateKey);
 			
 			if(checkUsername($username) && checkPassword($password) && checkEmail($email)){
 				$queryUsername = "SELECT * FROM Users WHERE name = '".$username."'";
@@ -25,20 +29,13 @@
 				}        
 				
 				if((!$emailExists) & (!$usernameExists)){
-					$activateKey = activationKey();
-					$sql = "INSERT INTO Users (name, password, email, activationKey)
-					VALUES ('$username', '".hash('sha256',($password))."', '$email', '$activateKey')";
-					if ($conn->query($sql) === TRUE){
-						
-						$to = "$email";
-						$sub = "Activation Dave's test website";
-						$msg = "This is your activation link http://82.73.183.34/project/projectx/activation.php?activationKey={$activateKey}&email={$email}"; 
+					$stmt->execute();
+					$to = "$email";
+					$sub = "Activation Dave's test website";
+					$msg = "This is your activation link http://82.73.183.34/project/projectx/activation.php?activationKey={$activateKey}&email={$email}"; 
 
-						mail($to, $sub, $msg);	
-						echo "<p style='color: red;'> Succesfull registered, an email has been send, activate your account. </p>";
-		        	}else{
-		          		echo "Error: " . $sql . "<br>" . $conn->error;
-					}
+					mail($to, $sub, $msg);	
+					echo "<p style='color: red;'> Succesfull registered, an email has been send, activate your account. </p>";
 				}			
 			}
 		}else{
