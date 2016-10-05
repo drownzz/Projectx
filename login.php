@@ -10,8 +10,8 @@
 			
 			$queryUsername = "SELECT * FROM Users WHERE name = '".$username."'";       
 	        $resultUsername = mysqli_query($conn,$queryUsername);
-			
-	        if(mysqli_num_rows($resultUsername)<=0){
+
+	        if(($resultUsername->num_rows)==0){
 	        	if(empty($username)){
 	        		echo "<p style='color: red;'> Username cannot be empty.</p>";
 	        	}else{
@@ -21,9 +21,9 @@
 				$query = "SELECT * FROM users WHERE name = '$username' AND password = '".hash('sha256',($password))."'";
 				$queryActivated = "SELECT * FROM users WHERE name = '$username' AND activated = '1'";
 				if($result=mysqli_query($conn,$query)){
-					if(mysqli_num_rows($result)==1){
+					if(($result->num_rows)==1){
 						if($activated=mysqli_query($conn,$queryActivated)){
-							if(mysqli_num_rows($activated)==1){					
+							if(($activated->num_rows)==1){					
 								echo "Logged in succesfully";
 								$_SESSION["user_id"] = $username;
 								header('Refresh: 2; URL=index.php');

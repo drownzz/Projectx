@@ -7,8 +7,8 @@
 			$email = $_POST['email'];
 			$activateKey = activationKey();
 			$saltPassword = hash('sha256',($password));
-			$stmt = $conn->prepare("INSERT INTO users (name, password, email, activationKey) VALUES (?, ?, ?, ?)");
-			$stmt->bind_param("ssss", $username, $saltPassword, $email, $activateKey);
+			$register = $conn->prepare("INSERT INTO users (name, password, email, activationKey) VALUES (?, ?, ?, ?)");
+			$register->bind_param("ssss", $username, $saltPassword, $email, $activateKey);
 			
 			if(checkUsername($username) && checkPassword($password) && checkEmail($email)){
 				$queryUsername = "SELECT * FROM Users WHERE name = '".$username."'";
@@ -29,7 +29,7 @@
 				}        
 				
 				if((!$emailExists) & (!$usernameExists)){
-					$stmt->execute();
+					$register->execute();
 					$to = "$email";
 					$sub = "Activation Dave's test website";
 					$msg = "This is your activation link http://82.73.183.34/project/projectx/activation.php?activationKey={$activateKey}&email={$email}"; 
